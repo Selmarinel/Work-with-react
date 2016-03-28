@@ -3,34 +3,41 @@
  */
 var CommentBox = React.createClass({
     handleCommentSubmit: function(comment) {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            type: 'POST',
-            data: comment,
-            success: function(data) {
-                this.setState({data: data});
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
+        var id = 0;
+        this.state.data.map(function(e){
+            return id = e.id;
         });
+        comment.id = ++id;
+        //$.ajax({
+        //    url: "/01/api/core.php",
+        //    dataType: 'json',
+        //    type: 'POST',
+        //    data: comment,
+        //    //success: function(data) {
+        //    //    this.setState({data: data});
+        //    //}.bind(this),
+        //    //error: function(xhr, status, err) {
+        //    //    console.error(this.props.url, status, err.toString());
+        //    //}.bind(this)
+        //});
+        this.state.data.push(comment);
     },
     getInitialState: function() {
-        return {data: []};
+        return {data: data};
     },
     loadCommentsFromServer: function() {
-        $.ajax({
-            url: this.props.url,
-            dataType: 'json',
-            cache: false,
-            success: function(data) {
-                this.setState({data: data});
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(this.props.url, status, err.toString());
-            }.bind(this)
-        });
+        //$.ajax({
+        //    url: this.props.url,
+        //    dataType: 'json',
+        //    cache: false,
+        //    success: function(data) {
+        //        this.setState({data: data});
+        //    }.bind(this),
+        //    error: function(xhr, status, err) {
+        //        console.error(this.props.url, status, err.toString());
+        //    }.bind(this)
+        //});
+        this.setState({data: data});
     },
     componentDidMount: function() {
         this.loadCommentsFromServer();
@@ -126,7 +133,13 @@ var Comment = React.createClass({
         );
     }
 });
+var data=
+    [
+        {"id" : "1", "user": "Pete Hunt", "text": "This is one comment"},
+        {"id" : "2", "user": "Jordan Walke", "text": "This is *another* comment"}
+    ];
+
 ReactDOM.render(
-<CommentBox url="http://core.loc/site/api/comments" pollInterval={2000}/>,
+<CommentBox data={data} pollInterval={2000}/>,
     document.getElementById('content')
 );
